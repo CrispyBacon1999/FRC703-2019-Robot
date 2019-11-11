@@ -20,7 +20,7 @@ class DeepSpaceRobot(magicbot.MagicRobot):
     # climber: Climber
     drivetrain: Drivetrain
     elevator: Elevator
-    # hatch: Hatch
+    hatch: Hatch
 
     drive_joystick: wpilib.Joystick
 
@@ -77,6 +77,11 @@ class DeepSpaceRobot(magicbot.MagicRobot):
             robotmap.ELEVATOR["lower"]
         )
         self.elevator_encoder = TalonEncoder(self.elevator_motor1)
+
+        # Hatch
+        self.hatch_hold_piston = wpilib.Solenoid(robotmap.INTAKE["hatch"]["actuator"])
+        self.hatch_lift_piston = wpilib.Solenoid(robotmap.INTAKE["hatch"]["lift"])
+
 
         # Joysticks
         self.drive_joystick = wpilib.Joystick(0)

@@ -2,3 +2,4 @@ robotpy-installer
 pyfrc
 robotpy-ctre
 robotpy-rev
+mock

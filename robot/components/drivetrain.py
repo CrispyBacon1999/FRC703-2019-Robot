@@ -58,6 +58,18 @@ class Drivetrain:
         self.using_gyro = True
 
     def find_nearest_angle(self, target):
+        """Will convert an angle to a relative target angle
+        based on the current rotation of the robot. For example,
+        if the robot is at 360 degrees and the target is 30 degrees,
+        this will return 390 degrees.
+        
+        This method is a little bit buggy when the area
+        around -180 / 180 degrees hits. It doesn't correctly
+        wrap and gives a full rotation instead. Not the end
+        of the world but it is a thing.
+
+        :param target: The target angle to turn to
+        """
         curr = self.current_angle
         num_rots = curr/360
         # 360 relative
@@ -71,7 +83,6 @@ class Drivetrain:
             else:
                 diff = target - 360 - curr
         
-        print(num_rots)
         return target + xround(num_rots) * 360
         
             
@@ -116,7 +127,6 @@ class Drivetrain:
         self.using_gyro = gyro
 
     def execute(self):
-        print(f"curr: {self.current_angle:.2f}, target: {self.target_angle:.2f}")
         if self.using_gyro:
             self.rotate = self.angle_difference * self.angle_kp
         self.train.driveCartesian(self.strafe, self.forward, self.rotate)

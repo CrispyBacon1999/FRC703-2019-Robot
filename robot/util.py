@@ -1,8 +1,8 @@
 # Account for height offsets
 ROCKET_CARGO_HEIGHTS = [
-    19.5,
-    47.5,
-    75.5
+    19.5 - 11.25,
+    47.5 - 11.25,
+    75.5 - 11.25
 ]
 
 ROCKET_HATCH_HEIGHTS = [
