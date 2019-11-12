@@ -43,7 +43,7 @@ class Elevator:
     @property
     def current_height(self) -> float:
         return self.encoder.position * self.encoder_height_ratio
-    
+
     @property
     def cargo_height(self) -> float:
         return self.current_height + self.cargo_height_const
@@ -74,7 +74,7 @@ class Elevator:
     def hatch_mode(self):
         self.height_for_hatch = True
         self.height_for_cargo = False
-    
+
     def cargo_mode(self):
         self.height_for_cargo = True
         self.height_for_hatch = False
@@ -85,7 +85,7 @@ class Elevator:
     def execute(self):
         if self.limit_switch_bottom.get():
             self.encoder.reset()
-        
+
         # Calculate Target Height for cargo or hatch
         target = self.target_height
         current = self.current_height
@@ -95,7 +95,7 @@ class Elevator:
         elif self.height_for_hatch:
             target = self.target_height + self.hatch_height_const
             current = self.hatch_height
-        
+
         error = target - current
         p = error * self.height_kp
         if abs(error) > self.height_tolerance:
@@ -104,6 +104,5 @@ class Elevator:
             self.i_err = 0
 
         pid_output = p + self.i_err * self.height_ki
-
 
         self.motor1.set(ctre.ControlMode.PercentOutput, pid_output)

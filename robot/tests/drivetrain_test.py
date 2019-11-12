@@ -64,5 +64,6 @@ def test_move():
             dt.forward == 0 * dt.forward_multiplier
             and dt.strafe == 0 * dt.strafe_multiplier
             and dt.rotate == 1
-            and dt.target_angle == 1 * dt.gyro_rotate_to_angle_multiplier + dt.current_angle
+            and dt.target_angle
+            == 1 * dt.gyro_rotate_to_angle_multiplier + dt.current_angle
         )

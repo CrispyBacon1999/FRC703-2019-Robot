@@ -3,10 +3,11 @@ from components.elevator import Elevator
 
 from unittest.mock import patch, PropertyMock
 
+
 def test_setpoint():
     e = Elevator()
     setup_tunables(e, "Elevator")
-    
+
     e.move_to_setpoint(0)
     assert e.target_height == 0, "Target height should be set to the value"
 
@@ -19,14 +20,16 @@ def test_setpoint():
     e.move_to_setpoint(-5)
     assert e.target_height == 0, "Target height should be the minimum value"
 
+
 def test_get_height():
     e = Elevator()
-    setup_tunables(e, "Elevator") 
+    setup_tunables(e, "Elevator")
     with patch(
         "components.elevator.Elevator.current_height", new_callable=PropertyMock
     ) as ch:
         ch.return_value = 50
         assert e.get_height() == e.current_height
+
 
 """
 def test_current_height():
@@ -39,18 +42,20 @@ def test_current_height():
         assert e.current_height == 4096 * e.encoder_height_ratio
 """
 
+
 def test_cargo_height():
     e = Elevator()
-    setup_tunables(e, "Elevator") 
+    setup_tunables(e, "Elevator")
     with patch(
         "components.elevator.Elevator.current_height", new_callable=PropertyMock
     ) as ch:
         ch.return_value = 50
         assert e.cargo_height == 50 + e.cargo_height_const
 
+
 def test_hatch_height():
     e = Elevator()
-    setup_tunables(e, "Elevator") 
+    setup_tunables(e, "Elevator")
     with patch(
         "components.elevator.Elevator.current_height", new_callable=PropertyMock
     ) as ch:

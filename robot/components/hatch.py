@@ -18,7 +18,7 @@ class Hatch:
 
     def hold(self):
         self.is_holding = True
-    
+
     def release(self):
         self.is_holding = False
 

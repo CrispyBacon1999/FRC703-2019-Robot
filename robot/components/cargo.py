@@ -12,7 +12,7 @@ class Cargo:
 
     is_in_position = tunable(False)
 
-    motor_input_speed = tunable(-.6)
+    motor_input_speed = tunable(-0.6)
     motor_output_speed = tunable(1)
 
     def lift(self):
@@ -23,9 +23,9 @@ class Cargo:
 
     def intake(self):
         self.motor_speed = self.motor_input_speed
-    
+
     def outtake(self):
         self.motor_speed = self.motor_output_speed
 
     def execute(self):
-        self.motor.set(ctre.ControlMode.PercentOutput,self.motor_speed)
+        self.motor.set(ctre.ControlMode.PercentOutput, self.motor_speed)

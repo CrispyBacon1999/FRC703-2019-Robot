@@ -12,6 +12,7 @@ def xround(n):
         return float(round(n))
     return n + abs(n) / n * 0.5
 
+
 class Drivetrain:
     train: wpilib.drive.MecanumDrive
     gyro: wpilib.ADXRS450_Gyro
@@ -71,21 +72,19 @@ class Drivetrain:
         :param target: The target angle to turn to
         """
         curr = self.current_angle
-        num_rots = curr/360
+        num_rots = curr / 360
         # 360 relative
         rel = (curr + 180) % 360 - 180
         target = (target + 180) % 360 - 180
         diff = abs(target) - abs(rel)
-        
+
         if abs(diff) > 180:
             if diff < 0:
                 diff = target + 360 - curr
             else:
                 diff = target - 360 - curr
-        
+
         return target + xround(num_rots) * 360
-        
-            
 
     @property
     def nearest_90(self):

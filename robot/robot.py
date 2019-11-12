@@ -86,7 +86,6 @@ class DeepSpaceRobot(magicbot.MagicRobot):
         self.cargo_motor = ctre.TalonSRX(robotmap.INTAKE["cargo"]["actuator"])
         self.cargo_lift_piston = wpilib.Solenoid(robotmap.INTAKE["cargo"]["lift"])
 
-
         # Joysticks
         self.drive_joystick = wpilib.Joystick(0)
         self.op_joystick = wpilib.Joystick(1)
@@ -134,7 +133,6 @@ class DeepSpaceRobot(magicbot.MagicRobot):
         elif self.perp_button.get():
             self.drivetrain.rotate_to_angle(self.drivetrain.nearest_90)
             gyro_manually_set = True
-
 
         HEIGHTS = [0, 0, 0]
         if self.hatch_panel_button.get():
