@@ -8,6 +8,10 @@ from magicbot import tunable
 
 
 def xround(n):
+    """Rounds away from zero
+    
+    :param n: the value to round
+    """
     if round(n + 1) - round(n) == 1:
         return float(round(n))
     return n + abs(n) / n * 0.5
@@ -48,13 +52,18 @@ class Drivetrain:
 
     @property
     def current_angle(self) -> float:
+        """Gets the current angle from the gyro"""
         return self.gyro.getAngle()
 
     @property
     def angle_difference(self) -> float:
+        """Calculates the difference in the target angle and the current angle"""
         return self.target_angle - self.current_angle
 
     def rotate_to_angle(self, angle: float) -> None:
+        """Sets the target angle to turn to and sets the gyro to be used
+        :param angle: the angle to rotate to
+        """
         self.target_angle = angle
         self.using_gyro = True
 

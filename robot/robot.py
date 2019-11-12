@@ -11,13 +11,22 @@ from components.drivetrain import Drivetrain
 from components.elevator import Elevator
 from components.hatch import Hatch
 
+from automations.climb3 import Climb3
+
 from components.subcomponents.talon_encoder import TalonEncoder
 from util import ROCKET_CARGO_HEIGHTS, ROCKET_HATCH_HEIGHTS
 
 
 class DeepSpaceRobot(magicbot.MagicRobot):
+
+    # state machines
+
+    climb3: Climb3
+
+    # components
+
     cargo: Cargo
-    # climber: Climber
+    climber: Climber
     drivetrain: Drivetrain
     elevator: Elevator
     hatch: Hatch
@@ -86,15 +95,48 @@ class DeepSpaceRobot(magicbot.MagicRobot):
         self.cargo_motor = ctre.TalonSRX(robotmap.INTAKE["cargo"]["actuator"])
         self.cargo_lift_piston = wpilib.Solenoid(robotmap.INTAKE["cargo"]["lift"])
 
-        # Joysticks
+        # Climber
+        self.climber_front_left_motor = ctre.VictorSPX(robotmap.CLIMBER_FL["motor"])
+        self.climber_front_right_motor = ctre.VictorSPX(robotmap.CLIMBER_FR["motor"])
+        self.climber_back_motor = ctre.VictorSPX(robotmap.CLIMBER_BACK["motor"])
+        self.climber_wheel_motor = ctre.VictorSPX(robotmap.CLIMBER_WHEELS)
+
+        # Climber Limit Switches
+        self.climber_front_left_upper_switch = wpilib.DigitalInput(
+            robotmap.CLIMBER_FL["switch"]["top"]
+        )
+        self.climber_front_right_upper_switch = wpilib.DigitalInput(
+            robotmap.CLIMBER_FR["switch"]["top"]
+        )
+        self.climber_front_left_lower_switch = wpilib.DigitalInput(
+            robotmap.CLIMBER_FL["switch"]["bottom"]
+        )
+        self.climber_front_right_lower_switch = wpilib.DigitalInput(
+            robotmap.CLIMBER_FR["switch"]["bottom"]
+        )
+        self.climber_back_upper_switch = wpilib.DigitalInput(
+            robotmap.CLIMBER_BACK["switch"]["top"]
+        )
+        self.climber_back_lower_switch = wpilib.DigitalInput(
+            robotmap.CLIMBER_BACK["switch"]["bottom"]
+        )
+
+        # Joystick 1
         self.drive_joystick = wpilib.Joystick(0)
-        self.op_joystick = wpilib.Joystick(1)
+        
         self.slow_button = JoystickButton(self.drive_joystick, 1)
         self.bottom_tower_front_button = JoystickButton(self.drive_joystick, 9)
         self.bottom_tower_back_button = JoystickButton(self.drive_joystick, 10)
         self.perp_button = JoystickButton(self.drive_joystick, 6)
         self.top_tower_front_button = JoystickButton(self.drive_joystick, 7)
         self.top_tower_back_button = JoystickButton(self.drive_joystick, 8)
+
+        self.climb_button = JoystickButton(self.drive_joystick, 3)
+        self.climb_cancel_button = JoystickButton(self.drive_joystick, 4)
+
+
+        # Joystick 2
+        self.op_joystick = wpilib.Joystick(1)
 
         self.tower_l1_button = JoystickButton(self.op_joystick, 1)
         self.tower_l2_button = JoystickButton(self.op_joystick, 2)
@@ -103,6 +145,15 @@ class DeepSpaceRobot(magicbot.MagicRobot):
         self.cargo_ball_button = JoystickButton(self.op_joystick, 6)
         self.elevator_ground_button = JoystickButton(self.op_joystick, 7)
         self.elevator_load_button = JoystickButton(self.op_joystick, 4)
+
+        # Climb Joystick
+        self.climb_joystick = wpilib.Joystick(2)
+        self.climber_front_lift_button = JoystickButton(self.climb_joystick, 1)
+        self.climber_back_lift_button = JoystickButton(self.climb_joystick, 2)
+        self.climber_front_lower_button = JoystickButton(self.climb_joystick, 3)
+        self.climber_back_lower_button = JoystickButton(self.climb_joystick, 4)
+        self.climber_drive_button = JoystickButton(self.climb_joystick, 5)
+        self.climber_reverse_button = JoystickButton(self.climb_joystick, 6)
 
     def teleopInit(self):
         self.elevator.recalculate_ratio()
@@ -154,6 +205,24 @@ class DeepSpaceRobot(magicbot.MagicRobot):
             self.elevator.move_to_setpoint(
                 ROCKET_HATCH_HEIGHTS[0] if self.elevator.height_for_hatch else 0
             )
+        
+        if self.climber_front_lift_button.get():
+            self.climber.front_up()
+        if self.climber_back_lift_button.get():
+            self.climber.rear_up()
+        if self.climber_front_lower_button.get():
+            self.climber.front_down()
+        if self.climber_back_lower_button.get():
+            self.climber.rear_down()
+        if self.climber_drive_button.get():
+            self.climber.drive_forward()
+        if self.climber_reverse_button.get():
+            self.climber.drive_backwards()
+
+        if self.climb_button.get():
+            self.climb3.climb()
+        if self.climb_cancel_button.get():
+            self.climb3.stop()
 
         self.drivetrain.move(
             forward,
