@@ -24,7 +24,7 @@ class BottomFront(AutonomousStateMachine):
     @state()
     def turn_to_tower(self):
         target_angle = 30
-
+        self.elevator.move_to_setpoint(HEIGHTS[0])
         self.drivetrain.rotate_to_angle(target_angle)
         self.drivetrain.using_gyro = True
         if abs(self.drivetrain.current_angle - target_angle) < 1e-3:
@@ -37,7 +37,7 @@ class BottomFront(AutonomousStateMachine):
     @timed_state(duration=1, next_state="align_to_tower")
     def slide_sideways(self):
         self.drivetrain.move(0, .6, 0)
-        self.elevator.move_to_setpoint(HEIGHTS[0])
+        
 
     @timed_state(duration=.4, next_state="place_hatch")
     def align_to_tower(self):
@@ -56,6 +56,7 @@ class BottomFront(AutonomousStateMachine):
     def rotate_to_loading(self):
 
         target_angle=180
+        self.hatch.lift()
 
         self.drivetrain.rotate_to_angle(target_angle)
         self.drivetrain.using_gyro = True
@@ -64,4 +65,4 @@ class BottomFront(AutonomousStateMachine):
 
     @timed_state(duration=1.5)
     def drive_to_loading_station(self):
-        self.drivetrain.move(1, 0, 0)
+        self.drivetrain.move(1, -.2, 0)

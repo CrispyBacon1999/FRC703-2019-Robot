@@ -6,7 +6,7 @@ class PhysicsEngine(object):
         self.physics_controller = physics_controller
         self.position = 0
         self.physics_controller.add_device_gyro_channel("adxrs450_spi_0_angle")
-        self.elevator_encoder_ticks_per_sec = 4096
+        self.elevator_encoder_ticks_per_sec = 4096 / 2
 
     def update_sim(self, hal_data, now, tm_diff):
         lr_motor = hal_data["CAN"][f'sparkmax-{robotmap.DRIVE_MOTORS["rl"][0]}']["value"]

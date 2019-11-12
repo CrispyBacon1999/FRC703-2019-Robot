@@ -28,8 +28,10 @@ class Elevator:
 
     encoder_height_ratio = tunable(0)
 
+    i_err = 0
+
     height_kp = 0.5
-    height_ki = 0
+    height_ki = 0.005
     height_kd = 0
     height_tolerance = 0.25
 
@@ -87,4 +89,13 @@ class Elevator:
             target = self.target_height + self.hatch_height_const
             current = self.hatch_height
         error = target - current
-        self.motor1.set(ctre.ControlMode.PercentOutput, error * self.height_kp)
+        p = error * self.height_kp
+        if abs(error) > self.height_tolerance:
+            self.i_err += error
+        else:
+            self.i_err = 0
+
+        pid_output = p + self.i_err * self.height_ki
+
+
+        self.motor1.set(ctre.ControlMode.PercentOutput, pid_output)
