@@ -16,7 +16,7 @@ from util import ROCKET_CARGO_HEIGHTS, ROCKET_HATCH_HEIGHTS
 
 
 class DeepSpaceRobot(magicbot.MagicRobot):
-    # cargo: Cargo
+    cargo: Cargo
     # climber: Climber
     drivetrain: Drivetrain
     elevator: Elevator
@@ -81,6 +81,10 @@ class DeepSpaceRobot(magicbot.MagicRobot):
         # Hatch
         self.hatch_hold_piston = wpilib.Solenoid(robotmap.INTAKE["hatch"]["actuator"])
         self.hatch_lift_piston = wpilib.Solenoid(robotmap.INTAKE["hatch"]["lift"])
+
+        # Cargo
+        self.cargo_motor = ctre.TalonSRX(robotmap.INTAKE["cargo"]["actuator"])
+        self.cargo_lift_piston = wpilib.Solenoid(robotmap.INTAKE["cargo"]["lift"])
 
 
         # Joysticks

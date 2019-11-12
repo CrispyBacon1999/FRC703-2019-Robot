@@ -79,6 +79,7 @@ class Elevator:
     def execute(self):
         if self.limit_switch_bottom.get():
             self.encoder.reset()
+        
         # Calculate Target Height for cargo or hatch
         target = self.target_height
         current = self.current_height
@@ -88,6 +89,7 @@ class Elevator:
         elif self.height_for_hatch:
             target = self.target_height + self.hatch_height_const
             current = self.hatch_height
+        
         error = target - current
         p = error * self.height_kp
         if abs(error) > self.height_tolerance:

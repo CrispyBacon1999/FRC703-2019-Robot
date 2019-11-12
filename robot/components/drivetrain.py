@@ -37,7 +37,7 @@ class Drivetrain:
     # PID
 
     # Angle
-    angle_kp = 0.3
+    angle_kp = 0.5
     angle_ki = 0
     angle_kd = 0
     angle_tolerance = 0.5
@@ -91,9 +91,9 @@ class Drivetrain:
     def nearest_90(self):
         mod90 = self.current_angle % 90
         if mod90 > 45:
-            return self.current_angle + mod90
+            return self.current_angle + (90 - mod90)
         else:
-            return self.current_angle - mod90
+            return self.current_angle - (90 - mod90)
 
     def move(
         self,
