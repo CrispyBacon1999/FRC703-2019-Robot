@@ -88,6 +88,7 @@ class Drivetrain:
 
     @property
     def nearest_90(self):
+        """Finds the closest 90 degree angle to the current rotation."""
         mod90 = self.current_angle % 90
         if mod90 > 45:
             return self.current_angle + (90 - mod90)
@@ -104,6 +105,16 @@ class Drivetrain:
         gyro: bool = False,
         gyro_manually_set: bool = False,
     ):
+        """Takes joystick inputs and sets all the appropriate drive values to the drivetrain.
+
+        :param forward: the y component of the robot
+        :param strafe: the x component of the robot
+        :param rotation: the rotation component of the robot
+        :param driver: is the robot being controlled by a human driver?
+        :param slow: should slow mode be used?
+        :param gyro: should the robot use gyroscope based rotation?
+        :param gyro_manually_set: was the gyroscope set externally?
+        """
         if driver:
             if slow:
                 # Slow down the movement if the robot should be going slowly
