@@ -34,6 +34,7 @@ class Elevator:
     height_ki = 0.005
     height_kd = 0
     height_tolerance = 0.25
+    max_height = 96
 
     @feedback
     def get_height(self):
@@ -62,8 +63,13 @@ class Elevator:
         )
 
     def move_to_setpoint(self, setpoint: float):
-        if setpoint >= 0 or setpoint < self.max_height:
+        if setpoint >= 0 and setpoint <= self.max_height:
             self.target_height = setpoint
+        else:
+            if setpoint < 0:
+                self.target_height = 0
+            if setpoint > self.max_height:
+                self.target_height = self.max_height
 
     def hatch_mode(self):
         self.height_for_hatch = True
