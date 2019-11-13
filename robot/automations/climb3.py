@@ -19,7 +19,7 @@ class Climb3(StateMachine):
     def stop(self):
         self.done()
 
-    @state(first=True)
+    @state(first=True, must_finish=True)
     def align_self(self):
         self.drivetrain.rotate_to_angle(180)
         self.cargo.lift()
@@ -28,18 +28,18 @@ class Climb3(StateMachine):
         if abs(self.drivetrain.current_angle % 360 - 180) < 1e-3:
             self.next_state('press_into_hab') 
     
-    @timed_state(duration=1.5, next_state='up')
+    @timed_state(duration=1.5, next_state='up',must_finish=True)
     def press_into_hab(self):
         self.drivetrain.move(.3, 0, 0)
     
-    @state
+    @state(must_finish=True)
     def up(self):
         self.climber.front_up()
         self.climber.rear_up()
         if self.climber.front_top_switch and self.climber.back_top_switch:
             self.next_state('lift_move_forward')
 
-    @timed_state(duration=1.5, next_state='retract_front')
+    @timed_state(duration=1.5, next_state='retract_front',must_finish=True)
     def lift_move_forward(self):
         self.climber.drive_forward()
         # Drop cargo and hatch to move weight forward as far as possible
@@ -48,27 +48,27 @@ class Climb3(StateMachine):
         self.climber.front_up()
         self.climber.rear_up()
     
-    @state
+    @state(must_finish=True)
     def retract_front(self):
         self.climber.rear_up()
         self.climber.front_down()
         if self.climber.front_bottom_switch:
             self.next_state('push_to_platform')
     
-    @timed_state(duration=3, next_state='retract_back')
+    @timed_state(duration=3, next_state='retract_back',must_finish=True)
     def push_to_platform(self):
         self.climber.drive_forward()
         self.climber.rear_up()
         self.climber.front_down()
     
-    @state
+    @state(must_finish=True)
     def retract_back(self):
         self.climber.front_down()
         self.climber.rear_down()
         if self.climber.back_bottom_switch:
             self.next_state('push_to_wall')
 
-    @timed_state(duration=.5)
+    @timed_state(duration=.5,must_finish=True)
     def push_to_wall(self):
         self.hatch.lift()
         self.cargo.lift()

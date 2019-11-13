@@ -1,0 +1,2 @@
+python37-robotpy-ctre
+python37-robotpy-rev

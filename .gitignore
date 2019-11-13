@@ -1,3 +1,11 @@
+
+# Python specifics
 **/__pycache__
-.vscode
 **/.pytest_cache
+
+# IDE
+.vscode
+.vs
+
+# Robotpy
+opkg_cache

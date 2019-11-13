@@ -71,12 +71,20 @@ class Elevator:
             if setpoint > self.max_height:
                 self.target_height = self.max_height
 
+    @property
+    def is_defense_mode(self):
+        return not (self.height_for_hatch or self.height_for_cargo)
+
     def hatch_mode(self):
         self.height_for_hatch = True
         self.height_for_cargo = False
 
     def cargo_mode(self):
         self.height_for_cargo = True
+        self.height_for_hatch = False
+
+    def defense_mode(self):
+        self.height_for_cargo = False
         self.height_for_hatch = False
 
     def stop(self):

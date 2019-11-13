@@ -141,10 +141,14 @@ class DeepSpaceRobot(magicbot.MagicRobot):
         self.tower_l1_button = JoystickButton(self.op_joystick, 1)
         self.tower_l2_button = JoystickButton(self.op_joystick, 2)
         self.tower_l3_button = JoystickButton(self.op_joystick, 3)
-        self.hatch_panel_button = JoystickButton(self.op_joystick, 5)
-        self.cargo_ball_button = JoystickButton(self.op_joystick, 6)
-        self.elevator_ground_button = JoystickButton(self.op_joystick, 7)
         self.elevator_load_button = JoystickButton(self.op_joystick, 4)
+        self.hatch_panel_button = JoystickButton(self.op_joystick, 9)
+        self.cargo_ball_button = JoystickButton(self.op_joystick, 10)
+        self.defense_mode_button = JoystickButton(self.op_joystick, 5)
+
+        self.intake_button = JoystickButton(self.op_joystick, 5)
+        self.release_button = JoystickButton(self.op_joystick, 6)
+
 
         # Climb Joystick
         self.climb_joystick = wpilib.Joystick(2)
@@ -187,9 +191,17 @@ class DeepSpaceRobot(magicbot.MagicRobot):
 
         HEIGHTS = [0, 0, 0]
         if self.hatch_panel_button.get():
+            self.hatch.lower()
+            self.cargo.lift()
             self.elevator.hatch_mode()
         elif self.cargo_ball_button.get():
+            self.cargo.lower()
+            self.hatch.lift()
             self.elevator.cargo_mode()
+        elif self.defense_mode_button.get():
+            self.cargo.lift()
+            self.hatch.lift()
+            self.elevator.defense_mode()
 
         if self.elevator.height_for_hatch:
             HEIGHTS = ROCKET_HATCH_HEIGHTS
@@ -223,6 +235,17 @@ class DeepSpaceRobot(magicbot.MagicRobot):
             self.climb3.climb()
         if self.climb_cancel_button.get():
             self.climb3.stop()
+
+        if self.elevator.height_for_hatch:
+            if self.intake_button.get():
+                self.hatch.hold()
+            if self.release_button.get():
+                self.hatch.release()
+        if self.elevator.height_for_cargo:
+            if self.intake_button.get():
+                self.cargo.intake()
+            if self.release_button.get():
+                self.cargo.outtake()
 
         self.drivetrain.move(
             forward,
