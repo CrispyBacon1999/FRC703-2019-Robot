@@ -6,6 +6,8 @@ import wpilib.drive
 from magicbot import will_reset_to
 from magicbot import tunable
 
+from .subcomponents.spark_encoder import SparkEncoder
+
 
 def xround(n):
     """Rounds away from zero
@@ -19,7 +21,9 @@ def xround(n):
 
 class Drivetrain:
     train: wpilib.drive.MecanumDrive
+    tank_train: wpilib.drive.DifferentialDrive
     gyro: wpilib.ADXRS450_Gyro
+    mecanum = True
 
     # Drive variables
     forward = will_reset_to(0)
@@ -39,6 +43,9 @@ class Drivetrain:
     slow_strafe_multiplier = tunable(0.5)
     slow_rotate_multiplier = tunable(0.5)
 
+    l_encoder: SparkEncoder
+    r_encoder: SparkEncoder
+
     # PID
 
     # Angle
@@ -49,6 +56,14 @@ class Drivetrain:
 
     def __init__(self):
         self.enabled = False
+
+    @property
+    def left_encoder():
+        return self.l_encoder.position
+    
+    @property
+    def right_encoder():
+        return self.r_encoder.position
 
     @property
     def current_angle(self) -> float:
@@ -144,8 +159,17 @@ class Drivetrain:
         self.strafe = strafe
         self.rotate = rotation
         self.using_gyro = gyro
+        self.mecanum = True
+
+    def move_tank(self, left, right):
+        self.left = left
+        self.right = right
+        self.mecanum = False
 
     def execute(self):
-        if self.using_gyro:
-            self.rotate = self.angle_difference * self.angle_kp
-        self.train.driveCartesian(self.strafe, self.forward, self.rotate)
+        if self.mecanum:
+            if self.using_gyro:
+                self.rotate = self.angle_difference * self.angle_kp
+            self.train.driveCartesian(self.strafe, self.forward, self.rotate)
+        else:
+            self.tank_train.tankDrive(self.left, self.right)

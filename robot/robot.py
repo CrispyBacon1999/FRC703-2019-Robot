@@ -10,12 +10,14 @@ from components.climber import Climber
 from components.drivetrain import Drivetrain
 from components.elevator import Elevator
 from components.hatch import Hatch
+from components.trajectory_follower import TrajectoryFollower
 
 from automations.climb3 import Climb3
 
 from components.subcomponents.talon_encoder import TalonEncoder
 from util import ROCKET_CARGO_HEIGHTS, ROCKET_HATCH_HEIGHTS
 
+from trajectory_generator import load_trajectories
 
 class DeepSpaceRobot(magicbot.MagicRobot):
 
@@ -30,6 +32,7 @@ class DeepSpaceRobot(magicbot.MagicRobot):
     drivetrain: Drivetrain
     elevator: Elevator
     hatch: Hatch
+    follower: TrajectoryFollower
 
     drive_joystick: wpilib.Joystick
 
@@ -120,6 +123,10 @@ class DeepSpaceRobot(magicbot.MagicRobot):
         self.climber_back_lower_switch = wpilib.DigitalInput(
             robotmap.CLIMBER_BACK["switch"]["bottom"]
         )
+
+        self.trajectories = load_trajectories()
+
+
 
         # Joystick 1
         self.drive_joystick = wpilib.Joystick(0)
